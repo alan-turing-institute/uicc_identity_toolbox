@@ -40,7 +40,7 @@ Clone the Javacard SDK dependencies:
 git submodule update --init --recursive
 ```
 
-Then run `ant` to build the Java Card applet, hotp_stk.cap. 
+Then run `ant` to build the Java Card applet, HOTP_STK.cap. 
 
 
 # Install
