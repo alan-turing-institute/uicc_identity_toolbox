@@ -1,6 +1,8 @@
 # HOTP using STK
 This is a [SimToolKit (STK)](http://www.bladox.cz/devel-docs/gen_stk.html) implementation of the [RFC-4226](https://datatracker.ietf.org/doc/html/rfc4226) HMAC-Based One-Time Password (HOTP) authentication algorithm for sysmoISIM-SJA2 SIM cards. 
 
+## NOTE: This is just a 'hello world' demo at the moment and does not yet compute HOTP
+
 # Requirements
 
 Tested with:
