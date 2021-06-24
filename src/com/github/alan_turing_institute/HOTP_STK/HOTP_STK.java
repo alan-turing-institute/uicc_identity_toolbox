@@ -1,4 +1,4 @@
-package com.github.alan-turing-institute.HOTP_STK;
+package com.github.alan_turing_institute.HOTP_STK;
 
 import javacard.framework.*;
 import sim.toolkit.*;
