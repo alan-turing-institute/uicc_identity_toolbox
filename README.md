@@ -3,7 +3,7 @@ This is a [SimToolKit (STK)](http://www.bladox.cz/devel-docs/gen_stk.html) imple
 
 Note: The current implementation is a concept re-risking demo and comes with no assurances of functionality, standards comformity or safety.
 
-https://user-images.githubusercontent.com/10000317/123815928-cabafc00-d8ee-11eb-8d78-8cf804df2973.mp4
+https://user-images.githubusercontent.com/10000317/123816745-77957900-d8ef-11eb-8610-fd559349d5ac.mov
 
 # Requirements
 
