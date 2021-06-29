@@ -1,5 +1,5 @@
 .vscode
-
+.DS_Store
 ant-javacard.jar
 gp.jar
 bin/

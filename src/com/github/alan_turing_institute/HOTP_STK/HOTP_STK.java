@@ -1,30 +1,36 @@
 package com.github.alan_turing_institute.HOTP_STK;
 
 import javacard.framework.*;
+import javacard.framework.Util;
 import sim.toolkit.*;
 
 /*
-Originally from: https://git.osmocom.org/sim/hello-stk/tree/hello-stk/src/org/toorcamp/HelloSTK/HelloSTK.java
+	2021, Alan Turing Institute.
 */
 
 public class HOTP_STK extends Applet implements ToolkitInterface, ToolkitConstants {
 	// DON'T DECLARE USELESS INSTANCE VARIABLES! They get saved to the EEPROM,
 	// which has a limited number of write cycles.
-	private byte helloMenuItem;
+	private byte otpMenuItem;
 	
-	static byte[] welcomeMsg = new byte[] { 'W', 'e', 'l', 'c', 'o', 'm', 'e', ' ',
-                                            't', 'o', ' ', 'T', 'o', 'o', 'r', 'C',
-                                            'a', 'm', 'p', ' ', '2', '0', '1', '2' };
+	static short hotpDigits = 7;
+	static short hotpKeyLen = 16;
+	static byte[] hotpKey = {1,2,3,4,5,6,7,8,9,0,1,2,3,4,5,6};
+
+	static HMACgenerator hmacGen;
+
+	static byte[] passcodeMsg = new byte[7];
 	
-	static byte[] menuItemText = new byte[] { 'H', 'e', 'l', 'l', 'o', ',', ' ', 'S', 'T', 'K'};
+	static byte[] menuItemText = new byte[] { 'N', 'e', 'w', ' ', 'P', 'a', 's', 's', 'c', 'o', 'd', 'e'};
 	
 	private HOTP_STK() {
 		// This is the interface to the STK applet registry (which is separate
 		// from the JavaCard applet registry!)
 		ToolkitRegistry reg = ToolkitRegistry.getEntry();
+		hmacGen = new HMACgenerator(hotpKey, hotpKeyLen, hotpDigits);
 	
 		// Define the applet Menu Entry
-		helloMenuItem = reg.initMenuEntry(menuItemText, (short)0, (short)menuItemText.length,
+		otpMenuItem = reg.initMenuEntry(menuItemText, (short)0, (short)menuItemText.length,
 				PRO_CMD_SELECT_ITEM, false, (byte)0, (short)0);
 	}
 	
@@ -50,16 +56,20 @@ public class HOTP_STK extends Applet implements ToolkitInterface, ToolkitConstan
 		if (event == EVENT_MENU_SELECTION) {
 			byte selectedItemId = envHdlr.getItemIdentifier();
 
-			if (selectedItemId == helloMenuItem) {
-				showHello();
+			if (selectedItemId == otpMenuItem) {
+				showOTP();
 			}
 		}
 	}
 	
-	private void showHello() {
+	private void showOTP() {
 		ProactiveHandler proHdlr = ProactiveHandler.getTheHandler();
-		proHdlr.initDisplayText((byte)0, DCS_8_BIT_DATA, welcomeMsg, (short)0, 
-				(short)(welcomeMsg.length));
+
+		// Generate new OTP
+		hmacGen.generateHotp(passcodeMsg);
+
+		proHdlr.initDisplayText((byte)0, DCS_8_BIT_DATA, passcodeMsg, (short)0, 
+				(short)(passcodeMsg.length));
 		proHdlr.send();
 		return;
 	}
