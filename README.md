@@ -48,7 +48,9 @@ Then run `ant` to build the Java Card applet, HOTP_STK.cap.
 Download the `sim-tools` fork by @herlesupreeth. This fork adds support for the Sysmocom sysmoISIM-SJA2 ISIM cards to the [Osmocom sim-tools package](git.osmocom.org/sim/sim-tools/).
 
 ```
+cd ..
 git clone https://github.com/herlesupreeth/sim-tools.git
+cd hotp_stk
 ```
 
 Load and install the STK applet. It is vitally important that you replace `KIC1` and `KID1` with the specific keys for your Java Card. These are provided at the time of purchase and enable the Over The Air (OTA) security needed for loading STK applets to your card.
@@ -71,7 +73,7 @@ python2 ../sim-tools/shadysim/shadysim_isim.py --pcsc \
 To uninstall the STK applet, again replace `KIC1` and `KID1` with your card keys and then run the following.
 
 ```
-python2 shadysim_isim.py --pcsc -d d07002cA44\
+python2 ../sim-tools/shadysim/shadysim_isim.py --pcsc -d d07002cA44\
       --kic KIC --kid KID
 ```
 
