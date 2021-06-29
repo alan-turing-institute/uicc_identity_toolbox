@@ -9,6 +9,7 @@ https://user-images.githubusercontent.com/10000317/123816745-77957900-d8ef-11eb-
 
 Tested with:
 * [sysmoISIM-SJA2](http://shop.sysmocom.de/products/sysmoISIM-SJA2) with ADM keys. Do not unlock the card.
+* Nokia 106 Feature Phone and TTfone TT240 Smart-Feature Phone
 * PCSC card reader e.g. Gemalto IDBridge CT30
 * OpenJDK 11
 * Debian bullseye and OSX X 10.15.7
@@ -17,6 +18,9 @@ Tested with:
 ```
 pip2 install --user pycrypto pyscard
 ```
+
+Recommended:
+* 2FF to 4FF smartcard converter, [for example](https://www.aliexpress.com/item/32769577127.html?spm=a2g0s.9042311.0.0.5b4b4c4d68yrxs).
 
 # Build
 
