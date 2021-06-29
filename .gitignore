@@ -3,4 +3,4 @@
 ant-javacard.jar
 gp.jar
 bin/
-sdks/
+oracle_javacard_sdks/
