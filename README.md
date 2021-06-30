@@ -20,7 +20,7 @@ pip2 install --user pycrypto pyscard
 ```
 
 Recommended:
-* 2FF to 4FF smartcard converter, [for example](https://www.aliexpress.com/item/32769577127.html?spm=a2g0s.9042311.0.0.5b4b4c4d68yrxs).
+* FF to 2FF smartcard converter, or equivalent for your development device, [for example](https://www.aliexpress.com/item/32769577127.html?spm=a2g0s.9042311.0.0.5b4b4c4d68yrxs).
 
 # Build
 
