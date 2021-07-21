@@ -88,3 +88,4 @@ python2 ../sim-tools/shadysim/shadysim_isim.py --pcsc -d d07002cA44\
 * We are very thankful for @mrlnc's [HelloSTK2 repository](https://github.com/mrlnc/HelloSTK2) which made getting STK to work on the sysmoISIM-SJA2 a walk in the park!
 * We are grateful to @petr's [HOTP via NDEF on JavaCard](https://github.com/petrs/hotp_via_ndef) implementation which provides the HOTP code we first imported.
 * The `sim` library comes from [3GPP TS43.019](http://www.3gpp.org/ftp/Specs/archive/43_series/43.019/43019-560.zip), see [this Stack Overflow comment](https://stackoverflow.com/a/22471187)
+* This work was supported, in whole or in part, by the Bill & Melinda Gates Foundation [INV-001309].
