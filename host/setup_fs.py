@@ -21,6 +21,8 @@ FID_DF_GRAPHICS = '5f50'
 FID_EF_IMG = '4f20'
 FID_EF_INSTANCE = '4f01'
 FID_EF_INSTANCE2 = '4f02'
+FID_EF_INSTANCE3 = '4f06'
+FID_EF_INSTANCE4 = '4f04'
 
 # See ETSI TS 102 222 V15.0.0 e.g. Table 3: Coding of the data field of the CREATE FILE command (in case of creation of a DF/ADF)
 create_df_graphics = '82027821' 					 	# Tag File Descriptor, length, FD = '78' (DF), data coding
@@ -38,7 +40,7 @@ create_df_graphics = '62' + '{:02x}'.format(len(create_df_graphics)//2) + create
 # See ETSI TS 102 222 V15.0.0 e.g. Table 4: Coding of the data field of the CREATE FILE command (in case of the creation of an EF)
 create_ef_img = '82044221000A' 					# Tag File Descriptor, length, FD = '42' (linear fixed EF), data coding ='21' (const.), record length, n_records
 create_ef_img = create_ef_img + '83024F20' 		# Tag File ID, length, File ID: EF_IMG = 4F20
-create_ef_img = create_ef_img + '8A0105' 	 	# Tag LCSI, length, LCSI = 0x05 (activated)
+create_ef_img = create_ef_img + '8A0105' 	 	# Tag Life Cycle Status Info., length, LCSI = 0x05 (activated)
 create_ef_img = create_ef_img + '8B032F0602'	# Tag Security Attributes Referenced (8B), length, attributes: EF_ARR FID, record number
 create_ef_img = create_ef_img + '80020028'		# Tag Reserved file size, length, total file size = n_records*record_len i.e. 4*10
 create_ef_img = create_ef_img + '8800'			# SFI (Short File Identifier), length, SFI
@@ -67,9 +69,17 @@ ef_instance_data = '2E280000000000000001FF80'\
 
 ef_instance_data2 = '0505FEEBBFFFFFFF'
 
+ef_instance_data3 =  '1b1bfffffff0178406fac7bed14db45a289a8b4590516fa3fbec055501ffe6bff31d768795fce3e66733799dad4bd5688c66528e7f23837bf105d8b099301ffeb0e9c06794fbe8ab8745090468b6f0cd160023be956070133b47ffffffff'
+
+ef_instance_data4 =	 '3636fffffffffffffffffffffffffffc000cff00c000f00033fc030003cffccf03fcffcf3ff33c0ff3ff3cc0cc3cf3cc0cf30330f3cf3033cc0cc0c3ccc0cf3033030f33033cc0cf0c00cc0cf3033c30033033cffcc0fffcffcf3ff303fff3ff3c000cccccc000f0003333330003fffffc3ccffffffffff0f33ffffc3c0fccfcf300f0f03f33f3cc03fc333fff0fc0fff0ccfffc3f03ff0f0f0fc3c3cffc3c3c3f0f0f3fc3c3f3ccf330cf0f0fcf33ccc33fccccf30303c0ff3333cc0c0f03c3c330cc0fc3ff0f0cc3303f0fffc303f003cff3ff0c0fc00f3fcfff030033f3c0cffc0c00cfcf033c030f0c3c000ff00c3c30f0003fffffccf00fcc3fffff33c03f30fc000f0ff0cc3ff0003c3fc330ffcffcc0cccfc03f3ff303333f00fcc0cc030c00c0f303300c300303cc0cf3cff00f0f3033cf3fc03c3cc0cf00000303f3033c00000c0fcffcc3333c003f3ff30cccf000fc000c3c3f3cc0f00030f0fcf303ffffffffffffffffffffffffffff'
+
 ef_img_record_1 = '01' + '2E' + '28' + '11' + FID_EF_INSTANCE + '0000' + '{:04x}'.format(len(ef_instance_data)//2)
 
 ef_img_record_2 = '01' + '05' + '05' + '11' + FID_EF_INSTANCE2 + '0000' + '{:04x}'.format(len(ef_instance_data2)//2)
+
+ef_img_record_3 = '01' + '1b' + '1b' + '11' + FID_EF_INSTANCE3 + '0000' + '{:04x}'.format(len(ef_instance_data3)//2)
+
+ef_img_record_4 = '01' + '36' + '36' + '11' + FID_EF_INSTANCE4 + '0000' + '{:04x}'.format(len(ef_instance_data4)//2)
 
 # See ETSI TS 131 102 V16.7.0 4.6.12 Image Instance Data Files for file atributes
 # 4FXX, transparent EF. From TS 102 221, FD = 0b01000001 = 0x41
@@ -84,11 +94,17 @@ create_ef_instance = '62' + '{:02x}'.format(len(create_ef_instance)//2) + create
 create_ef_instance2 = create_ef_instance[0:16] + FID_EF_INSTANCE2 + create_ef_instance[20:40] + '{:04x}'.format(len(ef_instance_data2)//2)
 create_ef_instance2 = create_ef_instance2 + create_ef_instance[44:48]
 
+create_ef_instance3 = create_ef_instance[0:16] + FID_EF_INSTANCE3 + create_ef_instance[20:40] + '{:04x}'.format(len(ef_instance_data3)//2)
+create_ef_instance3 = create_ef_instance3 + create_ef_instance[44:48]
+
+create_ef_instance4 = create_ef_instance[0:16] + FID_EF_INSTANCE4 + create_ef_instance[20:40] + '{:04x}'.format(len(ef_instance_data4)//2)
+create_ef_instance4 = create_ef_instance4 + create_ef_instance[44:48]
+
 
 def main():
 
 	reader_no = 0
-	pin_adm1 = '98877146'
+	pin_adm1 = '37927587'
 
 	sl = PcscSimLink(reader_no)
 
@@ -143,6 +159,12 @@ def main():
 		print('Error: EF.IMG not found at {}'.format(FID_EF_IMG))
 		print('Attempting to Create EF.IMG...')
 		sl.send_apdu_checksw(scc.cla_byte + "e0" + '0000' + '{:02x}'.format(len(create_ef_img)//2) + create_ef_img)
+	else:
+		# Check the file is current, if not then resize and re-write the file.
+		try:
+			pass
+		except Exception as e:
+			pass
 
 
 	df_img_instance_check = scc.try_select_path([FID_EF_INSTANCE])
@@ -157,16 +179,55 @@ def main():
 		print('Attempting to Create sample EF.INSTANCE at {}...'.format(FID_EF_INSTANCE2))
 		sl.send_apdu_checksw(scc.cla_byte + "e0" + '0000' + '{:02x}'.format(len(create_ef_instance2)//2) + create_ef_instance2)
 
+	df_img_instance_check = scc.try_select_path([FID_EF_INSTANCE3])
+	if df_img_instance_check[-1][1] != '9000':
+		print('Error: EF.INSTANCE not found at {}'.format(FID_EF_INSTANCE3))
+		print('Attempting to Create sample EF.INSTANCE at {}...'.format(FID_EF_INSTANCE3))
+		sl.send_apdu_checksw(scc.cla_byte + "e0" + '0000' + '{:02x}'.format(len(create_ef_instance3)//2) + create_ef_instance3)
 
+	df_img_instance_check = scc.try_select_path([FID_EF_INSTANCE4])
+	if df_img_instance_check[-1][1] != '9000':
+		print('Error: EF.INSTANCE not found at {}'.format(FID_EF_INSTANCE4))
+		print('Attempting to Create sample EF.INSTANCE at {}...'.format(FID_EF_INSTANCE4))
+		sl.send_apdu_checksw(scc.cla_byte + "e0" + '0000' + '{:02x}'.format(len(create_ef_instance4)//2) + create_ef_instance4)
+
+
+	# These should verify if it's there first so save EEPROM from write cycles
 	print('Writing EF.INSTANCE data to {}...'.format(FID_EF_INSTANCE))
 	resp = scc.update_binary(FID_EF_INSTANCE, ef_instance_data, offset=0, verify=True)
 
 	print('Writing EF.INSTANCE data to {}...'.format(FID_EF_INSTANCE2))
 	resp = scc.update_binary(FID_EF_INSTANCE2, ef_instance_data2, offset=0, verify=True)
 
+	print('Writing EF.INSTANCE data to {}...'.format(FID_EF_INSTANCE3))
+	# Ensure correct size
+	#resize_file = '8302' + FID_EF_INSTANCE3 + '8002' + '{:02x}'.format(len(ef_instance_data3)//2)
+	#resize_file = '62' + '{:02x}'.format(len(resize_file)//2) + resize_file
+	# CLA + INS + P1 + P2 + Lc + Data field
+	#sl.send_apdu_checksw('80' + "d4" + '00' + '00' + '{:02x}'.format(len(resize_file)//2) + resize_file)
+	resp = scc.update_binary(FID_EF_INSTANCE3, ef_instance_data3, offset=0, verify=True)
+
+	print('Writing EF.INSTANCE data to {}...'.format(FID_EF_INSTANCE4))
+	resp = scc.update_binary(FID_EF_INSTANCE4, ef_instance_data4[0:100], offset=0, verify=False) 		#Writes first 100
+	resp = scc.update_binary(FID_EF_INSTANCE4, ef_instance_data4[100:200], offset=50, verify=False)		#Writes next 100
+	resp = scc.update_binary(FID_EF_INSTANCE4, ef_instance_data4[200:300], offset=100, verify=False)	#...
+	resp = scc.update_binary(FID_EF_INSTANCE4, ef_instance_data4[400:500], offset=150, verify=False)	
+	#resp = scc.update_binary(FID_EF_INSTANCE4, ef_instance_data4[500:600], offset=200, verify=False)	
+	#resp = scc.update_binary(FID_EF_INSTANCE4, ef_instance_data4[600:700], offset=250, verify=False)	
+	#resp = scc.update_binary(FID_EF_INSTANCE4, ef_instance_data4[700:], offset=300, verify=False)	
+	#resp = scc.update_binary(FID_EF_INSTANCE4, ef_instance_data4[800:], offset=350, verify=False)	
+	#resp=scc.read_binary(FID_EF_INSTANCE4)
+	#print(resp)
+
+
 	print('Patching EF.IMG...')
 	resp = scc.update_record(FID_EF_IMG, 1, ef_img_record_1, verify=True)
 	resp = scc.update_record(FID_EF_IMG, 2, ef_img_record_2, verify=True)
+	resp = scc.update_record(FID_EF_IMG, 3, ef_img_record_3, verify=True)
+	resp = scc.update_record(FID_EF_IMG, 4, ef_img_record_4, verify=True)
+
+	# Make sure Service No. 22 is enabled on USIM Service Table (EF.UST)
+
 
 	print('Done! :)')
 
