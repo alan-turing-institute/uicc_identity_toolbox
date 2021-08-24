@@ -21,7 +21,23 @@ Run:
 python3 setup_fs.py
 ```
 
-Only continue if the script completes successfully. Now that the filesystem is configured, build and install the applet as follows.]
+Only continue if the script completes successfully. Now that the filesystem is configured, build and install the applet as follows.
+
+__NOTE:__ You need to enable 'Service 22' (Image serice) in the USIM Service table before the applet will work. This can be done by setting bit 22 to 1 in the file EF.UST on the card. The simple way to do this for now is using the `pysim-Shell` tool as follows (__Set ADM1__):
+
+```
+./pySim-shell.py --pin-adm ADM1 --pcsc-device 0
+
+```
+
+then:
+
+```
+select ADF.USIM
+select EF.UST
+ust_service_activate 22
+quit
+```
 
 First, build the applet by running
 
