@@ -4,7 +4,7 @@ Experimental, have fun...
 
 The latest applet will display a basic 'hello world' QR code on the ttFone 240 and the Alcatel Pixi 3. The QR code is 27x27 pixels and can be read using a smartphone camera.
 
-Obviously lots to do here! but the very basics are at least in place.
+Obviously lots to do here! but the very basics are in place.
 
 ![photo1629720537_smaller](https://user-images.githubusercontent.com/10000317/130613365-717188f9-1967-4ec3-bb6b-a06bfd9d76b7.jpeg)
 
