@@ -6,7 +6,7 @@ The latest applet will display a basic 'hello world' QR code on the ttFone 240 a
 
 Obviously lots to do here! but the very basics are at least in place.
 
-![photo1629720537](https://user-images.githubusercontent.com/10000317/130613129-770badb6-1bf4-4f28-9e85-6d3f4e72b975.jpeg)
+![photo1629720537_smaller](https://user-images.githubusercontent.com/10000317/130613365-717188f9-1967-4ec3-bb6b-a06bfd9d76b7.jpeg)
 
 
 # Build and Install
