@@ -75,15 +75,16 @@ ef_instance_data4 =	'3636fffffffffffffffffffffffffffc000cff00c000f00033fc030003c
 
 ef_img_record_1 = '01' + '2E' + '28' + '11' + FID_EF_INSTANCE + '0000' + '{:04x}'.format(len(ef_instance_data)//2)
 
-ef_img_record_2 = '01' + '05' + '05' + '11' + FID_EF_INSTANCE2 + '0000' + '{:04x}'.format(len(ef_instance_data2)//2)
+ef_img_record_2 = '01' + '1b' + '1b' + '11' + FID_EF_INSTANCE3 + '0000' + '{:04x}'.format(len(ef_instance_data3)//2)
 
-ef_img_record_3 = '01' + '1b' + '1b' + '11' + FID_EF_INSTANCE3 + '0000' + '{:04x}'.format(len(ef_instance_data3)//2)
+ef_img_record_3 = '01' + '36' + '36' + '11' + FID_EF_INSTANCE4 + '0000' + '{:04x}'.format(len(ef_instance_data4)//2)
 
 #ef_img_record_3 = '01' + '36' + '36' + '11' + FID_EF_INSTANCE3 + '0000' + '{:04x}'.format(0x6f)
+print(len(ef_instance_data3)//2)
 
 #3636
 # 6f is limit len(ef_instance_data4)//2
-ef_img_record_4 = '01' + '36' + '36' + '11' + FID_EF_INSTANCE4 + '0000' + '{:04x}'.format(len(ef_instance_data4)//2)
+ef_img_record_4 = '01' + '36' + '36' + '11' + FID_EF_INSTANCE4 + '0000' + '{:04x}'.format(len(ef_instance_data3)//2)
 
 # See ETSI TS 131 102 V16.7.0 4.6.12 Image Instance Data Files for file atributes
 # 4FXX, transparent EF. From TS 102 221, FD = 0b01000001 = 0x41
@@ -198,10 +199,10 @@ def main():
 
 	# These should verify if it's there first so save EEPROM from write cycles
 	print('Writing EF.INSTANCE data to {}...'.format(FID_EF_INSTANCE))
-	#resp = scc.update_binary(FID_EF_INSTANCE, ef_instance_data, offset=0, verify=True)
+	resp = scc.update_binary(FID_EF_INSTANCE, ef_instance_data, offset=0, verify=True)
 
 	print('Writing EF.INSTANCE data to {}...'.format(FID_EF_INSTANCE2))
-	#resp = scc.update_binary(FID_EF_INSTANCE2, ef_instance_data2, offset=0, verify=True)
+	resp = scc.update_binary(FID_EF_INSTANCE2, ef_instance_data2, offset=0, verify=True)
 
 	print('Writing EF.INSTANCE data to {}...'.format(FID_EF_INSTANCE3))
 	# Ensure correct size
@@ -209,24 +210,24 @@ def main():
 	#resize_file = '62' + '{:02x}'.format(len(resize_file)//2) + resize_file
 	# CLA + INS + P1 + P2 + Lc + Data field
 	#sl.send_apdu_checksw('80' + "d4" + '00' + '00' + '{:02x}'.format(len(resize_file)//2) + resize_file)
-	#resp = scc.update_binary(FID_EF_INSTANCE3, ef_instance_data3, offset=0, verify=True)
+	resp = scc.update_binary(FID_EF_INSTANCE3, ef_instance_data3, offset=0, verify=True)
 
 	print('Writing EF.INSTANCE data to {}...'.format(FID_EF_INSTANCE4))
-	#resp = scc.update_binary(FID_EF_INSTANCE4, ef_instance_data4[0:100], offset=0, verify=False) 		#Writes first 100
-	#resp = scc.update_binary(FID_EF_INSTANCE4, ef_instance_data4[100:200], offset=50, verify=False)		#Writes next 100
-	#resp = scc.update_binary(FID_EF_INSTANCE4, ef_instance_data4[200:300], offset=100, verify=False)	#...
-	#resp = scc.update_binary(FID_EF_INSTANCE4, ef_instance_data4[400:500], offset=150, verify=False)	
-	#resp = scc.update_binary(FID_EF_INSTANCE4, ef_instance_data4[500:600], offset=200, verify=False)	
-	#resp = scc.update_binary(FID_EF_INSTANCE4, ef_instance_data4[600:700], offset=250, verify=False)	
-	#resp = scc.update_binary(FID_EF_INSTANCE4, ef_instance_data4[700:], offset=300, verify=False)	
-	#resp = scc.update_binary(FID_EF_INSTANCE4, ef_instance_data4[800:], offset=350, verify=False)	
+	resp = scc.update_binary(FID_EF_INSTANCE4, ef_instance_data4[0:100], offset=0, verify=False) 		#Writes first 100
+	resp = scc.update_binary(FID_EF_INSTANCE4, ef_instance_data4[100:200], offset=50, verify=False)		#Writes next 100
+	resp = scc.update_binary(FID_EF_INSTANCE4, ef_instance_data4[200:300], offset=100, verify=False)	#...
+	resp = scc.update_binary(FID_EF_INSTANCE4, ef_instance_data4[400:500], offset=150, verify=False)	
+	resp = scc.update_binary(FID_EF_INSTANCE4, ef_instance_data4[500:600], offset=200, verify=False)	
+	resp = scc.update_binary(FID_EF_INSTANCE4, ef_instance_data4[600:700], offset=250, verify=False)	
+	resp = scc.update_binary(FID_EF_INSTANCE4, ef_instance_data4[700:], offset=300, verify=False)	
+	resp = scc.update_binary(FID_EF_INSTANCE4, ef_instance_data4[800:], offset=350, verify=False)	
 	#resp=scc.read_binary(FID_EF_INSTANCE4)
 	#print(resp)
 
 
 	print('Patching EF.IMG...')
-	#resp = scc.update_record(FID_EF_IMG, 1, ef_img_record_1, verify=True)
-	#resp = scc.update_record(FID_EF_IMG, 2, ef_img_record_2, verify=True)
+	resp = scc.update_record(FID_EF_IMG, 1, ef_img_record_1, verify=True)
+	resp = scc.update_record(FID_EF_IMG, 2, ef_img_record_2, verify=True)
 	resp = scc.update_record(FID_EF_IMG, 3, ef_img_record_3, verify=True)
 	resp = scc.update_record(FID_EF_IMG, 4, ef_img_record_4, verify=True)
 

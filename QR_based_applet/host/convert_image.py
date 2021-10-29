@@ -31,7 +31,8 @@ def generate_qr(qr_code_filename):
         version=2,
         error_correction=qrcode.constants.ERROR_CORRECT_L,
         box_size=1,
-        border=1,
+        border=0,
+		mask_pattern=4
     )
 
     with open("qr.json", "r") as read_file:
@@ -64,6 +65,8 @@ if __name__ == '__main__':
 	qr_code_filename = "STK_qr.png"
 	qr_array = generate_qr(qr_code_filename)
 
+	#print(qr_array)
+
 	# ETSI TS 131 102 raster icons
 	# The status of each raster image point is coded in one bit, to indicate whether the point is set (status = 1) or not set (status = 0)
 	# Unused bits shall be set to 1.
@@ -72,29 +75,31 @@ if __name__ == '__main__':
 	y_size = qr_array.shape[1]
 	qr_array = qr_array.flatten()
 	print('QR size (bits): {}'.format(qr_array.size))
+	#print(qr_array)
 
+	# Compute padding
 	raster_remainder = qr_array.size%8
-	raster_bytes = qr_array.size//8
-	if raster_remainder > 0:
-		raster_bytes += 1
+	n_raster_bits = qr_array.size - raster_remainder
+	if raster_remainder:
+		n_raster_bits += 8
 
-	raster_bits = ['1']*raster_bytes*8
+	n_raster_bytes = n_raster_bits//8
+	raster_bits = ['1']*n_raster_bits
 
-	for b in range(0, len(raster_bits)):
-		try:
-			if qr_array[b] == False:
-				raster_bits[b] = '0'
-		except IndexError as e:
-			break;
-
-	corrected_raster_bits = ''
+	for b in range(0, qr_array.size):
+		if qr_array[b] == False:
+			raster_bits[b] = '0'
+			
 	raster_bits = ''.join(raster_bits)
+	icon_bytes = []
 
-	for by_idx in range(raster_bytes):
+	print(qr_array.flatten())
+	print(raster_bits)
+	for by_idx in range(n_raster_bytes):
 		little_end_byte = raster_bits[by_idx*8:(by_idx*8)+8]
-		corrected_raster_bits += '{:02x}'.format(int(little_end_byte,2))
+		icon_bytes += '{:02x}'.format(int(little_end_byte,2))
 
 	print('Image hex string:')
-	print('{:02x}'.format(x_size) + '{:02x}'.format(y_size) + corrected_raster_bits)
+	print('{:02x}'.format(x_size) + '{:02x}'.format(y_size) + ''.join(icon_bytes))
 
 	quit()

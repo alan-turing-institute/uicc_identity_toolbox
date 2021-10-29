@@ -1,51 +1,65 @@
-# QR codes using UICC API
+# QR codes using STK
+Hmm, can we get QR codes working via STK?
 
-Experimental, have fun...
-
-The latest applet will display a basic 'hello world' QR code on the ttFone 240 and the Alcatel Pixi 3. The QR code is 27x27 pixels and can be read using a smartphone camera.
-
-Obviously lots to do here! but the very basics are in place.
-
-![photo1629720537_smaller](https://user-images.githubusercontent.com/10000317/130613365-717188f9-1967-4ec3-bb6b-a06bfd9d76b7.jpeg)
+Note: The current implementation is a concept re-risking demo and comes with no assurances of functionality, standards comformity or safety.
 
 
-# Build and Install
 
-You first need to prep your sysmoISIM-SJA2 Java Card by installing the necessary icon files (and their supporting directories and filesystem components) onto the card. To do this, open `host/setup_fc.py` and insert the `ADM1` pin for your specific card on line 107. __Note: if you use the wrong ADM PIN you may brick your card and be unable to continue with this process.__
+# Requirements
 
-Once updated, make sure your Java Card is inserted in the reader in your machine and available (e.g., by running `pcsctest` and verifying the output corresponding to your reader number). If necessary update the `reader_no` on line 106.
-
-Run:
-
+Tested with:
+* [sysmoISIM-SJA2](http://shop.sysmocom.de/products/sysmoISIM-SJA2) with ADM keys. Do not unlock the card.
+* Nokia 106 Feature Phone and TTfone TT240 Smart-Feature Phone
+* PCSC card reader e.g. Gemalto IDBridge CT30
+* OpenJDK 11
+* Debian bullseye and OSX X 10.15.7
+* Python 2.7.18
+* The pycrypto and pyscard libraries
 ```
-python3 setup_fs.py
+pip2 install --user pycrypto pyscard
 ```
 
-Only continue if the script completes successfully. Now that the filesystem is configured, build and install the applet as follows.
+Recommended:
+* FF to 2FF smartcard converter, or equivalent for your development device, [for example](https://www.aliexpress.com/item/32769577127.html?spm=a2g0s.9042311.0.0.5b4b4c4d68yrxs).
 
-__NOTE:__ You need to enable 'Service 22' (Image serice) in the USIM Service table before the applet will work. This can be done by setting bit 22 to 1 in the file EF.UST on the card. The simple way to do this for now is using the `pysim-Shell` tool as follows (__Set ADM1__):
+# Build
 
+Ensure you have OpenJDK 11, the `ant` build tool and configure JDK 11 as your Java environment:
 ```
-./pySim-shell.py --pin-adm ADM1 --pcsc-device 0
-
+ sudo apt install openjdk-11-jdk ant
+ sudo update-alternatives --config java
 ```
-
-then:
-
+or
 ```
-select ADF.USIM
-select EF.UST
-ust_service_activate 22
-quit
+brew install openjdk@11 ant
+export JAVA_HOME=$(/usr/libexec/java_home -v 11)
 ```
 
-First, build the applet by running
+Clone this repository:
+```
+git clone https://github.com/alan-turing-institute/hotp_stk.git
+cd hotp_stk
+```
+
+Clone the Javacard SDK dependencies:
+```
+git submodule update --init --recursive
+```
+
+Then run `ant` to build the Java Card applet, QRSTK.cap. 
+
+
+# Install
+
+Download the `sim-tools` fork by @herlesupreeth. This fork adds support for the Sysmocom sysmoISIM-SJA2 ISIM cards to the [Osmocom sim-tools package](git.osmocom.org/sim/sim-tools/).
 
 ```
-ant
+cd ..
+git clone https://github.com/herlesupreeth/sim-tools.git
+cd hotp_stk
 ```
 
-Next, load and install the applet onto your Java Card. It is vitally important that you replace `KIC1` and `KID1` with the specific keys for your card. These are provided at the time of purchase and enable the Over The Air (OTA) security needed for loading applets to your card.
+Load and install the STK applet. It is vitally important that you replace `KIC1` and `KID1` with the specific keys for your Java Card. These are provided at the time of purchase and enable the Over The Air (OTA) security needed for loading STK applets to your card.
 
 ```
 python2 ../sim-tools/shadysim/shadysim_isim.py --pcsc \
@@ -53,32 +67,24 @@ python2 ../sim-tools/shadysim/shadysim_isim.py --pcsc \
       -i ./bin/QRSTK.cap \
       --kic KIC1 \
       --kid KID1 \
-      --instance-aid f07002CA44900101 \
-      --module-aid f07002CA44900101 \
-      --nonvolatile-memory-required 01ff \
-      --volatile-memory-for-install 01ff \
-      --enable-uicc-toolkit \
-      --enable-uicc-file-access \
-      --access-domain 020101 \
-      --max-menu-entry-text 20 \
-      --max-menu-entries 06
+      --instance-aid e07002CA44900101 \
+      --module-aid e07002CA44900101 \
+      --nonvolatile-memory-required 00ff \
+      --volatile-memory-for-install 00ff \
+      --enable-sim-toolkit \
+      --max-menu-entry-text 15 \
+      --max-menu-entries 02 
 ```
 
-Note the additional parameters used for this applet : `--enable-uicc-toolkit` and `--enable-uicc-file-access`. 
-
-To uninstall the applet, again replace `KIC1` and `KID1` with your card keys and then run the following.
+To uninstall the STK applet, again replace `KIC1` and `KID1` with your card keys and then run the following.
 
 ```
-python2 ../sim-tools/shadysim/shadysim_isim.py --pcsc \
-      --kic KIC1 \
-      --kid KID1 \
-      -d f07002CA44
+python2 ../sim-tools/shadysim/shadysim_isim.py --pcsc -d e07002cA44\
+      --kic KIC --kid KID
 ```
 
 # Credits and Gratitude
 
- We are very thankful for @mrlnc's [HelloSTK2 repository](https://github.com/mrlnc/HelloSTK2) which made getting STK to work on the sysmoISIM-SJA2 a walk in the park!
+* We are very thankful for @mrlnc's [HelloSTK2 repository](https://github.com/mrlnc/HelloSTK2) which made getting STK to work on the sysmoISIM-SJA2 a walk in the park!
 * We are grateful to @petr's [HOTP via NDEF on JavaCard](https://github.com/petrs/hotp_via_ndef) implementation which provides the HOTP code we first imported.
-* Big thank you to @herlesupreeth for the [sim-tools](https://github.com/herlesupreeth/sim-tools.git) fork. This fork adds support for the Sysmocom sysmoISIM-SJA2 ISIM.
-* The `UICC API` library comees from [ETSI TS 102 241](https://www.etsi.org/deliver/etsi_ts/102200_102299/102241/17.01.00_60/).
-* This work was supported, in whole or in part, by the Bill & Melinda Gates Foundation [INV-001309].
+* The `sim` library comes from [3GPP TS43.019](http://www.3gpp.org/ftp/Specs/archive/43_series/43.019/43019-560.zip), see [this Stack Overflow comment](https://stackoverflow.com/a/22471187)

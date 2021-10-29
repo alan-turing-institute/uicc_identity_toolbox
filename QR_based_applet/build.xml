@@ -8,7 +8,7 @@
     <!-- Create the distribution directory -->
     <taskdef name="javacard" classname="pro.javacard.ant.JavaCard" classpath="ant-javacard.jar"/>
     <javacard>
-      <cap targetsdk="../oracle_javacard_sdks/jc221_kit" jckit="../oracle_javacard_sdks/jc305u3_kit" output="bin/QRSTK.cap" sources="src" classes="bin" version="1.0">
+      <cap targetsdk="oracle_javacard_sdks/jc221_kit" jckit="oracle_javacard_sdks/jc305u3_kit" output="bin/QRSTK.cap" sources="src" classes="bin" version="1.0">
         <applet class="QRSTK.QRSTK" aid="f0:70:02:CA:44:90:01:01"/>
         <!--import exps="exp" jar="lib/sim.jar"/-->
         <import exps="exp" jar="lib/uicc-api-for-java-card-REL-7-6.jar"/>
@@ -19,6 +19,7 @@
   <target name="clean" description="clean up">
     <!-- Delete the built applet -->
     <delete dir="bin/"/>
+    <delete dir="QRSTK.cap"/>
   </target>
 
 </project>
