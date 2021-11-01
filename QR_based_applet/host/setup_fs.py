@@ -5,7 +5,7 @@
 # 1. Writes DF_GRAPHICS (5f50), EF_IMG (4f20) and EF_INSTANCE (4f01) to a Sysmocom SJ-A2
 # 2. Inserts EF_INSTANCE entry into EF.IMG
 from pySim.transport.pcsc import PcscSimLink
-from pySim.card_handler import Cardhandler
+from pySim.card_handler import CardHandler
 from pySim.cards import card_detect, SimCard
 from pySim.commands import SimCardCommands
 from pySim.utils import h2b, sanitize_pin_adm
