@@ -174,7 +174,7 @@ def main():
 
     # Draw binary array to screen
     plt.figure(facecolor='white')
-    plt.imshow(test, cmap=plt.cm.gray_r, interpolation='nearest')
+    plt.imshow(datamatrix, cmap=plt.cm.gray_r, interpolation='nearest')
     plt.axis('off')
     plt.show()
 

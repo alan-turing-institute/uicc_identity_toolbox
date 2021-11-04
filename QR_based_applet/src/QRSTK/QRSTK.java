@@ -13,9 +13,6 @@ import javacard.framework.*;
 public class QRSTK extends Applet implements ToolkitInterface
 {
 
-	// Our QR encoder
-	// JCQRencoder qr_encoder = new JCQRencoder(); // Unneeded as static
-
 	// Dedicated FileView objects
    	AdminFileView fvEF_DF_TELECOM;
 	AdminFileView fvEF_DF_GRAPHICS;
@@ -25,12 +22,10 @@ public class QRSTK extends Applet implements ToolkitInterface
 	FileView fvEF_IMG;
 	FileView fvEF_INSTANCE;
 
-	static short [] datamatrix; //makeTransientShortArray?
-
 	// FIDs
 	static final short FID_EF_SUME 		= (short)0x6F54;
 	static final short FID_EF_IMG  		= (short)0x4F20;
-	static final short FID_EF_INSTANCE  = (short)0x4F01;
+	static final short FID_EF_INSTANCE  = (short)0x4F06;
 
 	private byte [] ef_img_record = { 
 		(byte)0x01, (byte)0x2E, (byte)0x28, (byte)0x11, (byte)0x4F, (byte)0x01, (byte)0x00, (byte)0x00, (byte)0x00, (byte)0xE8, (byte)0xFF, (byte)0xFF,
@@ -159,8 +154,11 @@ public class QRSTK extends Applet implements ToolkitInterface
 		fvEF_SUME.select(UICCConstants.FID_DF_TELECOM); 
 		fvEF_SUME.select(FID_EF_SUME);
 
-
 		// DF.TELECOM->DF.GRAPHICS->EF.IMG
+		fvEF_IMG.select(UICCConstants.FID_DF_TELECOM);
+		fvEF_IMG.select(UICCConstants.FID_DF_GRAPHICS);
+		fvEF_IMG.select(FID_EF_INSTANCE);
+		
 		/*fvEF_DF_GRAPHICS.select(UICCConstants.FID_DF_TELECOM); 
 		try {
 			fvEF_DF_GRAPHICS.select(UICCConstants.FID_DF_GRAPHICS); 
@@ -309,10 +307,36 @@ public class QRSTK extends Applet implements ToolkitInterface
 							(byte)(DTQ_HIGH_PRIORITY|DTQ_WAIT_FOR_USER), 
 							ToolkitConstants.DEV_ID_DISPLAY);
 
-				datamatrix = JCQRencoder.encode(qr_message);
-				timing_string[0] = (byte)datamatrix[0];
-				timing_string[1] = (byte)datamatrix[1];
-				timing_string[2] = (byte)datamatrix[2];
+				JCQRencoder.encode(qr_message);
+
+				timing_string[0] = JCQRencoder.icon_bytes[0];
+				timing_string[1] = JCQRencoder.icon_bytes[1];
+				timing_string[2] = JCQRencoder.icon_bytes[2];
+
+				// updateBinary(short fileOffset, byte[] data, short dataOffset, short dataLength)
+				try {
+					fvEF_IMG.updateBinary((short)0, JCQRencoder.icon_bytes, (short)0, (short)JCQRencoder.icon_bytes.length);
+				} catch (UICCException e) {
+					timing_string[0] = (byte)'u';
+					timing_string[1] = (byte)'i';
+					timing_string[2] = (byte)':';
+					timing_string[3] = (byte)(e.getReason()&0xff);
+					timing_string[4] = (byte)((e.getReason()<<8)&0xff);
+				} catch (ArrayIndexOutOfBoundsException e) {
+					timing_string[0] = (byte)'a';
+					timing_string[1] = (byte)'i';
+					timing_string[2] = (byte)'o';
+					timing_string[3] = (byte)'o';
+					timing_string[4] = (byte)'b';
+				} catch (NullPointerException e) {
+					timing_string[0] = (byte)'n';
+					timing_string[1] = (byte)'u';
+					timing_string[2] = (byte)'l';
+					timing_string[3] = (byte)'l';
+					timing_string[4] = (byte)'p';
+					timing_string[4] = (byte)'e';
+				}
+				
 				
 				proh.appendTLV((byte)(ToolkitConstants.TAG_TEXT_STRING|ToolkitConstants.TAG_SET_CR),
 								DCS_8_BIT_DATA, 
